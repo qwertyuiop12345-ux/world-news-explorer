@@ -10,7 +10,14 @@ import { getTopHeadlines, getNewsByCountry } from '@/services/newsApi';
 import { NewsArticle } from '@/types';
 
 export const CountryPanel = () => {
-  const { selectedCountry, setSelectedCountry, activeCategory, setActiveCategory, isDarkMode } = useAppContext();
+  const {
+    selectedCountry,
+    setSelectedCountry,
+    activeCategory,
+    setActiveCategory,
+    isDarkMode
+  } = useAppContext();
+
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -21,174 +28,421 @@ export const CountryPanel = () => {
 
   const fetchNews = async () => {
     if (!selectedCountry) return;
+
     setLoading(true);
     setError(null);
 
     try {
       let articles: NewsArticle[];
+
       try {
-        articles = await getTopHeadlines(selectedCountry.iso2.toLowerCase(), activeCategory === 'general' ? undefined : activeCategory, 25);
+        articles = await getTopHeadlines(
+          selectedCountry.iso2.toLowerCase(),
+          activeCategory === 'general' ? undefined : activeCategory,
+          25
+        );
+
         if (articles.length === 0) throw new Error('No articles');
+
       } catch {
-        articles = await getNewsByCountry(selectedCountry.name, activeCategory === 'general' ? undefined : activeCategory, 25);
+        articles = await getNewsByCountry(
+          selectedCountry.name,
+          activeCategory === 'general' ? undefined : activeCategory,
+          25
+        );
       }
+
+
+      // DEBUG
+      console.log("Articles:", articles);
+      console.log("Count:", articles.length);
+
+
       setNews(articles);
-      if (articles.length === 0) setError('No news for this category.');
+
+      if (articles.length === 0) {
+        setError('No news for this category.');
+      }
+
     } catch (err: any) {
+
       const msg = err.message || 'Failed to load news';
-      setError(msg.includes('rate') ? 'Rate limit. Try later.' : msg.includes('API') ? 'API key error.' : msg);
+
+      setError(
+        msg.includes('rate')
+          ? 'Rate limit. Try later.'
+          : msg.includes('API')
+          ? 'API key error.'
+          : msg
+      );
+
       setNews([]);
+
     } finally {
       setLoading(false);
     }
   };
 
+
   if (!selectedCountry) return null;
 
-  const fmt = (n: number) => new Intl.NumberFormat().format(n);
+
+  const fmt = (n: number) =>
+    new Intl.NumberFormat().format(n);
+
 
   return (
     <AnimatePresence>
+
       <motion.div
         initial={{ x: '100%' }}
         animate={{ x: 0 }}
         exit={{ x: '100%' }}
-        transition={{ type: 'spring', damping: 30, stiffness: 250 }}
+        transition={{
+          type: 'spring',
+          damping: 30,
+          stiffness: 250
+        }}
+
         style={{
           position: 'fixed',
-          top: 0, right: 0,
+          top: 0,
+          right: 0,
           width: '100%',
           maxWidth: 600,
           height: '100vh',
           zIndex: 10000,
           overflowY: 'auto',
-          background: isDarkMode ? 'rgba(15,23,42,0.97)' : 'rgba(255,255,255,0.97)',
+
+          background: isDarkMode
+            ? 'rgba(15,23,42,0.97)'
+            : 'rgba(255,255,255,0.97)',
+
           backdropFilter: 'blur(16px)',
           WebkitBackdropFilter: 'blur(16px)',
+
           boxShadow: '-8px 0 32px rgba(0,0,0,0.3)',
         }}
       >
-        {/* ── Header ── */}
-        <div style={{
-          padding: '24px 20px 16px',
-          borderBottom: isDarkMode ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.08)',
-          position: 'sticky',
-          top: 0,
-          zIndex: 10,
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          background: isDarkMode ? 'rgba(15,23,42,0.97)' : 'rgba(255,255,255,0.97)',
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <span style={{ fontSize: 44 }}>{selectedCountry.flag}</span>
-              <div>
-                <h2 style={{ fontSize: 26, fontWeight: 800, margin: 0, color: isDarkMode ? '#fff' : '#000' }}>
-                  {selectedCountry.name}
-                </h2>
-                <p style={{ fontSize: 13, color: isDarkMode ? '#94a3b8' : '#64748b', margin: 0 }}>
-                  {selectedCountry.region}
-                </p>
-              </div>
-            </div>
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => setSelectedCountry(null)}
+
+
+        <div
+          style={{
+            padding:'24px 20px 16px',
+
+            borderBottom: isDarkMode
+              ? '1px solid rgba(255,255,255,0.08)'
+              : '1px solid rgba(0,0,0,0.08)',
+
+            position:'sticky',
+            top:0,
+            zIndex:10,
+
+            background:isDarkMode
+              ? 'rgba(15,23,42,0.97)'
+              : 'rgba(255,255,255,0.97)',
+          }}
+        >
+
+
+          <div
+            style={{
+              display:'flex',
+              alignItems:'center',
+              justifyContent:'space-between',
+              marginBottom:16
+            }}
+          >
+
+            <div
               style={{
-                width: 38, height: 38, borderRadius: 10,
-                background: isDarkMode ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                color: isDarkMode ? '#cbd5e1' : '#475569',
+                display:'flex',
+                alignItems:'center',
+                gap:12
               }}
             >
-              <X size={18} />
+
+              <span style={{fontSize:44}}>
+                {selectedCountry.flag}
+              </span>
+
+
+              <div>
+
+                <h2
+                  style={{
+                    fontSize:26,
+                    fontWeight:800,
+                    margin:0,
+                    color:isDarkMode?'#fff':'#000'
+                  }}
+                >
+                  {selectedCountry.name}
+                </h2>
+
+
+                <p
+                  style={{
+                    fontSize:13,
+                    color:isDarkMode?'#94a3b8':'#64748b',
+                    margin:0
+                  }}
+                >
+                  {selectedCountry.region}
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <motion.button
+
+              whileHover={{scale:1.1}}
+              whileTap={{scale:0.9}}
+
+              onClick={() => setSelectedCountry(null)}
+
+              style={{
+                width:38,
+                height:38,
+                borderRadius:10,
+                border:'none',
+                cursor:'pointer',
+
+                background:isDarkMode
+                  ? 'rgba(255,255,255,0.06)'
+                  : 'rgba(0,0,0,0.04)',
+
+                display:'flex',
+                alignItems:'center',
+                justifyContent:'center',
+
+                color:isDarkMode
+                  ? '#cbd5e1'
+                  : '#475569'
+              }}
+            >
+
+              <X size={18}/>
+
             </motion.button>
+
           </div>
 
-          {/* Quick Info */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, marginBottom: 16 }}>
-            <InfoTag icon={MapPin} label="Capital" value={selectedCountry.capital} dark={isDarkMode} />
-            <InfoTag icon={Users} label="Population" value={fmt(selectedCountry.population)} dark={isDarkMode} />
-            <InfoTag icon={Globe2} label="Currency" value={selectedCountry.currency} dark={isDarkMode} />
+
+
+          <div
+            style={{
+              display:'grid',
+              gridTemplateColumns:'repeat(3,1fr)',
+              gap:10,
+              marginBottom:16
+            }}
+          >
+
+            <InfoTag
+              icon={MapPin}
+              label="Capital"
+              value={selectedCountry.capital}
+              dark={isDarkMode}
+            />
+
+            <InfoTag
+              icon={Users}
+              label="Population"
+              value={fmt(selectedCountry.population)}
+              dark={isDarkMode}
+            />
+
+            <InfoTag
+              icon={Globe2}
+              label="Currency"
+              value={selectedCountry.currency}
+              dark={isDarkMode}
+            />
+
           </div>
 
-          {/* Category Filter */}
-          <NewsFilter activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
+
+          <NewsFilter
+            activeCategory={activeCategory}
+            onCategoryChange={setActiveCategory}
+          />
+
+
         </div>
 
-        {/* ── News List ── */}
-        <div style={{ padding: 20 }}>
+
+
+
+        <div style={{padding:20}}>
+
+
           {loading ? (
-            <div style={{ textAlign: 'center', paddingTop: 60 }}>
-              <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>
-                <div style={{ width: 48, height: 48, border: '3px solid rgba(59,130,246,0.2)', borderTopColor: '#3b82f6', borderRadius: '50%', margin: '0 auto 12px' }} />
-              </motion.div>
-              <p style={{ fontSize: 14, color: isDarkMode ? '#94a3b8' : '#64748b' }}>Loading news...</p>
+
+            <div style={{textAlign:'center',paddingTop:60}}>
+              Loading news...
             </div>
+
+
           ) : error ? (
-            <div style={{ textAlign: 'center', paddingTop: 60 }}>
-              <div style={{ fontSize: 48, marginBottom: 12 }}>😞</div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: isDarkMode ? '#fff' : '#000', marginBottom: 8 }}>
+
+            <div style={{textAlign:'center',paddingTop:60}}>
+
+              <h3>
                 Unable to Load
               </h3>
-              <p style={{ fontSize: 14, color: isDarkMode ? '#94a3b8' : '#64748b', marginBottom: 20 }}>{error}</p>
-              <button
-                onClick={fetchNews}
-                style={{
-                  padding: '10px 24px',
-                  background: 'linear-gradient(to right, #3b82f6, #2563eb)',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: 10,
-                  fontWeight: 600,
-                  fontSize: 14,
-                  cursor: 'pointer',
-                }}
-              >
+
+              <p>
+                {error}
+              </p>
+
+              <button onClick={fetchNews}>
                 Retry
               </button>
+
             </div>
+
+
           ) : news.length === 0 ? (
-            <div style={{ textAlign: 'center', paddingTop: 60 }}>
-              <div style={{ fontSize: 48, marginBottom: 12 }}>📰</div>
-              <h3 style={{ fontSize: 18, fontWeight: 700, color: isDarkMode ? '#fff' : '#000', marginBottom: 8 }}>
-                No News
-              </h3>
-              <p style={{ fontSize: 14, color: isDarkMode ? '#94a3b8' : '#64748b' }}>
-                Try another category.
-              </p>
+
+            <div style={{textAlign:'center',paddingTop:60}}>
+              No News
             </div>
+
+
           ) : (
-            <div style={{ display: 'grid', gap: 12 }}>
-              {news.map((article, i) => (
-                <NewsCard key={article.id} article={article} index={i} />
+
+            <div style={{display:'grid',gap:12}}>
+
+
+              <h2
+                style={{
+                  color:isDarkMode?'#fff':'#000',
+                  fontSize:18
+                }}
+              >
+                Total Articles: {news.length}
+              </h2>
+
+
+
+              {news.map((article,i)=>(
+
+                <div
+
+                  key={i}
+
+                  style={{
+                    padding:12,
+                    borderRadius:10,
+
+                    background:isDarkMode
+                      ? 'rgba(255,255,255,0.05)'
+                      : 'rgba(0,0,0,0.05)',
+
+                    color:isDarkMode
+                      ? '#fff'
+                      : '#000'
+                  }}
+
+                >
+
+                  {article.title}
+
+                </div>
+
               ))}
+
+
             </div>
+
           )}
+
+
         </div>
+
+
       </motion.div>
+
     </AnimatePresence>
   );
 };
 
-const InfoTag = ({ icon: Icon, label, value, dark }: { icon: any; label: string; value: string; dark: boolean }) => (
-  <div style={{
-    padding: 10,
-    borderRadius: 12,
-    background: dark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.03)',
-    border: dark ? '1px solid rgba(255,255,255,0.06)' : '1px solid rgba(0,0,0,0.06)',
-  }}>
-    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 4 }}>
-      <Icon style={{ width: 12, height: 12, color: '#3b82f6' }} />
-      <span style={{ fontSize: 10, color: dark ? '#94a3b8' : '#64748b', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.5 }}>
-        {label}
-      </span>
-    </div>
-    <p style={{ fontSize: 13, fontWeight: 700, color: dark ? '#fff' : '#000', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-      {value}
-    </p>
-  </div>
+
+
+
+const InfoTag = ({
+  icon:Icon,
+  label,
+  value,
+  dark
+}:{
+  icon:any;
+  label:string;
+  value:string;
+  dark:boolean;
+}) => (
+
+<div
+style={{
+padding:10,
+borderRadius:12,
+
+background:dark
+?'rgba(255,255,255,0.04)'
+:'rgba(0,0,0,0.03)',
+
+border:dark
+?'1px solid rgba(255,255,255,0.06)'
+:'1px solid rgba(0,0,0,0.06)'
+}}
+>
+
+<div
+style={{
+display:'flex',
+alignItems:'center',
+gap:6,
+marginBottom:4
+}}
+>
+
+<Icon
+style={{
+width:12,
+height:12,
+color:'#3b82f6'
+}}
+/>
+
+
+<span
+style={{
+fontSize:10,
+color:dark?'#94a3b8':'#64748b',
+fontWeight:600
+}}
+>
+{label}
+</span>
+
+</div>
+
+
+<p
+style={{
+fontSize:13,
+fontWeight:700,
+color:dark?'#fff':'#000',
+margin:0
+}}
+>
+{value}
+</p>
+
+
+</div>
+
 );
