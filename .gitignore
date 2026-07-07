@@ -1,0 +1,43 @@
+# ── Dependencies ──────────────────────────────────────────────────────────────
+/node_modules
+
+# ── Next.js build output (never deploy these) ─────────────────────────────────
+/.next/
+/out/
+/build
+
+# ── Environment files ──────────────────────────────────────────────────────────
+# BLOCK real secret files — these must NEVER go to GitHub or Netlify
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+
+# ALLOW the example template — it has no real keys, safe to commit
+!.env.example
+
+# ── Deployment platform ────────────────────────────────────────────────────────
+.vercel
+.netlify
+
+# ── OS / editor junk ──────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.pem
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ── TypeScript generated ──────────────────────────────────────────────────────
+*.tsbuildinfo
+next-env.d.ts
+
+# ── Test coverage ──────────────────────────────────────────────────────────────
+/coverage
