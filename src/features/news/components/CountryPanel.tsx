@@ -1,6 +1,5 @@
 
-'use client';
-
+'use client'
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, MapPin, Users, Globe2 } from 'lucide-react';
