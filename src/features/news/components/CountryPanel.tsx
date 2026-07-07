@@ -1,3 +1,4 @@
+```tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -42,7 +43,9 @@ export const CountryPanel = () => {
           25
         );
 
-        if (articles.length === 0) throw new Error('No articles');
+        if (articles.length === 0) {
+          throw new Error('No articles');
+        }
 
       } catch {
         articles = await getNewsByCountry(
@@ -52,11 +55,8 @@ export const CountryPanel = () => {
         );
       }
 
-
-      // DEBUG
       console.log("Articles:", articles);
       console.log("Count:", articles.length);
-
 
       setNews(articles);
 
@@ -105,45 +105,40 @@ export const CountryPanel = () => {
         }}
 
         style={{
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          width: '100%',
-          maxWidth: 600,
-          height: '100vh',
-          zIndex: 10000,
-          overflowY: 'auto',
+          position:'fixed',
+          top:0,
+          right:0,
+          width:'100%',
+          maxWidth:600,
+          height:'100vh',
+          zIndex:10000,
+          overflowY:'auto',
 
-          background: isDarkMode
+          background:isDarkMode
             ? 'rgba(15,23,42,0.97)'
             : 'rgba(255,255,255,0.97)',
 
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
+          backdropFilter:'blur(16px)',
+          WebkitBackdropFilter:'blur(16px)',
 
-          boxShadow: '-8px 0 32px rgba(0,0,0,0.3)',
+          boxShadow:'-8px 0 32px rgba(0,0,0,0.3)'
         }}
       >
-
 
         <div
           style={{
             padding:'24px 20px 16px',
-
-            borderBottom: isDarkMode
+            borderBottom:isDarkMode
               ? '1px solid rgba(255,255,255,0.08)'
               : '1px solid rgba(0,0,0,0.08)',
-
             position:'sticky',
             top:0,
             zIndex:10,
-
             background:isDarkMode
               ? 'rgba(15,23,42,0.97)'
-              : 'rgba(255,255,255,0.97)',
+              : 'rgba(255,255,255,0.97)'
           }}
         >
-
 
           <div
             style={{
@@ -166,7 +161,6 @@ export const CountryPanel = () => {
                 {selectedCountry.flag}
               </span>
 
-
               <div>
 
                 <h2
@@ -179,7 +173,6 @@ export const CountryPanel = () => {
                 >
                   {selectedCountry.name}
                 </h2>
-
 
                 <p
                   style={{
@@ -197,10 +190,8 @@ export const CountryPanel = () => {
 
 
             <motion.button
-
               whileHover={{scale:1.1}}
               whileTap={{scale:0.9}}
-
               onClick={() => setSelectedCountry(null)}
 
               style={{
@@ -223,13 +214,10 @@ export const CountryPanel = () => {
                   : '#475569'
               }}
             >
-
               <X size={18}/>
-
             </motion.button>
 
           </div>
-
 
 
           <div
@@ -270,14 +258,10 @@ export const CountryPanel = () => {
             onCategoryChange={setActiveCategory}
           />
 
-
         </div>
 
 
-
-
         <div style={{padding:20}}>
-
 
           {loading ? (
 
@@ -285,25 +269,16 @@ export const CountryPanel = () => {
               Loading news...
             </div>
 
-
           ) : error ? (
 
             <div style={{textAlign:'center',paddingTop:60}}>
-
-              <h3>
-                Unable to Load
-              </h3>
-
-              <p>
-                {error}
-              </p>
+              <h3>Unable to Load</h3>
+              <p>{error}</p>
 
               <button onClick={fetchNews}>
                 Retry
               </button>
-
             </div>
-
 
           ) : news.length === 0 ? (
 
@@ -311,55 +286,21 @@ export const CountryPanel = () => {
               No News
             </div>
 
-
           ) : (
 
             <div style={{display:'grid',gap:12}}>
 
-
-              <h2
-                style={{
-                  color:isDarkMode?'#fff':'#000',
-                  fontSize:18
-                }}
-              >
-                Total Articles: {news.length}
-              </h2>
-
-
-
-              {news.map((article,i)=>(
-
-                <div
-
-                  key={i}
-
-                  style={{
-                    padding:12,
-                    borderRadius:10,
-
-                    background:isDarkMode
-                      ? 'rgba(255,255,255,0.05)'
-                      : 'rgba(0,0,0,0.05)',
-
-                    color:isDarkMode
-                      ? '#fff'
-                      : '#000'
-                  }}
-
-                >
-
-                  {article.title}
-
-                </div>
-
+              {news.map((article,index)=>(
+                <NewsCard
+                  key={article.id}
+                  article={article}
+                  index={index}
+                />
               ))}
-
 
             </div>
 
           )}
-
 
         </div>
 
@@ -369,7 +310,6 @@ export const CountryPanel = () => {
     </AnimatePresence>
   );
 };
-
 
 
 
@@ -417,7 +357,6 @@ color:'#3b82f6'
 }}
 />
 
-
 <span
 style={{
 fontSize:10,
@@ -442,7 +381,7 @@ margin:0
 {value}
 </p>
 
-
 </div>
 
 );
+```
