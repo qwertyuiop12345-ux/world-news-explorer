@@ -57,7 +57,10 @@ export const CountryPanel = () => {
       console.log("Articles:", articles);
       console.log("Count:", articles.length);
 
-      setNews(articles);
+      console.log("BEFORE SET NEWS:", articles);
+console.log("FIRST ARTICLE:", articles[0]);
+
+setNews(articles);
 
       if (articles.length === 0) {
         setError('No news for this category.');
