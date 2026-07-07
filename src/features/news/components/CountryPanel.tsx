@@ -1,4 +1,4 @@
-```tsx
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -384,4 +384,3 @@ margin:0
 </div>
 
 );
-```
